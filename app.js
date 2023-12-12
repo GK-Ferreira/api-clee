@@ -5,6 +5,7 @@ const app = express()
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
 jwt = require('jsonwebtoken')
+const cors = require('cors')
 
 const equip = require('./routes/equip')
 // const adm = require('./routes/adm.js')
@@ -160,6 +161,15 @@ app.post("/auth/login",async(req,res)=>{
 const dbUser = process.env.DB_USER
 const dbPassword = process.env.DB_PASS
 const port = process.env.DB_PORT
+
+const corsOptions = {
+    origin: 'http://localhost:8081',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+};
+
+app.use(cors(corsOptions));
+
 
 mongoose.connect(`mongodb+srv://${dbUser}:${dbPassword}@clee.8t8902l.mongodb.net/?retryWrites=true&w=majority`).then(()=>{
     app.listen(port)
