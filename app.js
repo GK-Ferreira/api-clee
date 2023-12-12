@@ -163,7 +163,7 @@ const dbPassword = process.env.DB_PASS
 const port = process.env.DB_PORT
 
 const corsOptions = {
-    origin: 'http://localhost:8081',
+    origin: 'http://localhost:4200',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
 };
