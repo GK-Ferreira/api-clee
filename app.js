@@ -11,6 +11,7 @@ const equip = require('./routes/equip')
 // const adm = require('./routes/adm.js')
 const salas = require('./routes/salas')
 
+app.use(cors());
 
 mongoose.Promise = global.Promise
 
@@ -168,7 +169,6 @@ const port = process.env.DB_PORT
 //     credentials: true,
 // };
 
-app.use(cors());
 
 
 mongoose.connect(`mongodb+srv://${dbUser}:${dbPassword}@clee.8t8902l.mongodb.net/?retryWrites=true&w=majority`).then(()=>{
