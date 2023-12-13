@@ -6,12 +6,14 @@ const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
 jwt = require('jsonwebtoken')
 const cors = require('cors')
+const checkToken = require('./middleware/checkToken')
 
 const equip = require('./routes/equip')
 // const adm = require('./routes/adm.js')
 const salas = require('./routes/salas')
 
 app.use(cors());
+app.use(checkToken)
 
 mongoose.Promise = global.Promise
 
@@ -40,26 +42,6 @@ app.get("/user/:id",checkToken,async(req,res)=>{
           
 
 })
-
-function checkToken(req,res,next){
-  const authHeader = req.headers['authorization']
-  const token = authHeader && authHeader.split(" ")[1]
-
-
-  if(!token){
-      return res.status(401).json({msg: "acesso negado"})
-  }
-
-  try{
-      const secret = process.env.SECRET
-      jwt.verify(token,secret)
-
-      next()
-
-  }catch(err){
-      res.status(400).json({msg: "Token inválido"})
-  }
-}
 
 
 //register
