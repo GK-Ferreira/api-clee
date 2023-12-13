@@ -136,7 +136,7 @@ app.post("/auth/login",async(req,res)=>{
       })
       
       app.use('/equip', equip)
-      // app.use('/adm', adm)
+      app.use('/reserva_salas',reserva_salas)
       app.use('/salas', salas)
 
 const dbUser = process.env.DB_USER
