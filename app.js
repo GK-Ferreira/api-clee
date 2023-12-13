@@ -9,11 +9,9 @@ const cors = require('cors')
 const checkToken = require('./middleware/checkToken')
 
 const equip = require('./routes/equip')
-// const adm = require('./routes/adm.js')
 const salas = require('./routes/salas')
 
 app.use(cors());
-app.use(checkToken)
 
 mongoose.Promise = global.Promise
 

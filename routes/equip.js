@@ -3,11 +3,11 @@ const router = express.Router()
 const mongoose = require('mongoose')
 require('../models/Equip')
 const Equips = mongoose.model("equip")
-
+const checkToken = require('../middleware/checkToken')
 
 //cadastrando os equipamentos
 
-router.post('/add_equip', async (req,res)=>{
+router.post('/add_equip', checkToken,async (req,res)=>{
 
    const {code,name,qnt,status} = req.body
 
@@ -44,7 +44,7 @@ router.post('/add_equip', async (req,res)=>{
 
    //listando os equipamentos
 
-   router.get('/listEquip', async(req,res)=>{
+   router.get('/listEquip',checkToken, async(req,res)=>{
       Equips.find().then((equipamentos)=>{
          res.status(200).json(equipamentos)
       }).catch((err)=>{
@@ -53,7 +53,7 @@ router.post('/add_equip', async (req,res)=>{
 })
 
 //atualizando os equipamentos
-router.put('/attEquip/:id',async (req,res)=>{
+router.put('/attEquip/:id',checkToken,async (req,res)=>{
 
       const Equip = await Equips.findByIdAndUpdate(req.params.id,{
           name: req.body.name,
@@ -65,7 +65,7 @@ router.put('/attEquip/:id',async (req,res)=>{
   })
 
   //deletando os equipamentos
-  router.delete('/deleteEquip/:id', async(req,res)=>{
+  router.delete('/deleteEquip/:id', checkToken,async(req,res)=>{
 
    const Equip = await Equips.findByIdAndDelete(req.params.id)
    return res.send(Equip)
