@@ -10,6 +10,7 @@ const checkToken = require('./middleware/checkToken')
 
 const equip = require('./routes/equip')
 const salas = require('./routes/salas')
+const reserva_salas = require('./routes/reserva_salas')
 
 app.use(cors());
 
