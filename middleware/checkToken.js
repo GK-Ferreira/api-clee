@@ -18,7 +18,7 @@ function checkToken(req, res, next) {
   }
 }
 
-function checkRefreshToken(req, res) {
+function checkRefreshToken(req, res,next) {
   const refreshToken = req.body;
 
   if (!refreshToken) {
