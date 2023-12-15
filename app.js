@@ -120,15 +120,15 @@ app.post("/auth/login",async(req,res)=>{
      
      try{
          const secret = process.env.SECRET
+         const refreshToken = jwt.sign({  name,password }, secret,{expiresIn: '1800s'})
 
          const token = jwt.sign({
            refreshToken
 
           },secret,{
-            expiresIn: '20s'
+            expiresIn: '1800s'
           }
           )
-          const refreshToken = jwt.sign({  name,password }, secret,{expiresIn: '1800s'})
           
           res.status(200).json({msg: "autenticação realizada com sucesso", token, refreshToken})
           
@@ -142,45 +142,20 @@ app.post("/auth/login",async(req,res)=>{
 
       app.post("/refresh",checkRefreshToken,async(req,res)=>{
 
-        const {name,password} = req.body
-    
-    
-        if(!name){
-            return res.status(422).json("O nome é obrigatório")
-        }
-        if(!password){
-            return res.status(422).json("A senha é obrigatória")
-        }
-    
-        //check if user exists
-        const user= await User.findOne({name: name})
-    
-         if(!user){
-             return res.status(422).json({msg:"usuário não existe"})
-              
-         }
-    
-         //check password match
-         const checkPassword = await bcrypt.compare(password,user.password)
-    
-         if(!checkPassword){
-    
-            return res.status(404).json("Senha inválida")
-    
-         }
+        const {refreshToken} = req.body
          
          try{
              const secret = process.env.SECRET
     
              const token = jwt.sign({
-                id: user._id,
+                refreshToken
     
               },secret,{
                 expiresIn: '1800s'
               }
               )
               
-              res.status(200).json({msg: "autenticação realizada com sucesso", token})
+              res.status(200).json({msg: "Novo token gerado", token})
               
               
             }catch(err){
