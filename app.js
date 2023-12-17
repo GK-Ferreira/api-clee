@@ -3,7 +3,6 @@ require('dotenv').config()
 const express = require('express')
 const app = express()
 const mongoose = require('mongoose')
-const bcrypt = require('bcrypt')
 jwt = require('jsonwebtoken')
 const cors = require('cors')
 const checkToken = require('./middleware/checkToken')
@@ -15,6 +14,7 @@ const auth = require('./routes/auth')
 const equip = require('./routes/equip')
 const salas = require('./routes/salas')
 const reserva_salas = require('./routes/reserva_salas')
+const reserva_equip = require('./routes/reserva_equip')
 
 app.use(cors());
 
@@ -55,14 +55,16 @@ app.get("/user/:id",checkToken,async(req,res)=>{
       app.use('/equip', equip)
       app.use('/reserva_salas',reserva_salas)
       app.use('/salas', salas)
-
+      app.use('/reserva_equip' , reserva_equip)
+      
 const dbUser = process.env.DB_USER
 const dbPassword = process.env.DB_PASS
 const port = process.env.DB_PORT
 
 
 mongoose.connect(`mongodb+srv://${dbUser}:${dbPassword}@clee.8t8902l.mongodb.net/?retryWrites=true&w=majority`).then(()=>{
-    app.listen(port)
+    //mongoose.connect(`mongodb://localhost/CLEE_T`).then(()=>{    
+app.listen(port)
     console.log('connect successful')
 
 }).catch((err)=>{
