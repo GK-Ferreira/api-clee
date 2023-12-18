@@ -17,7 +17,8 @@ const reserva_salas = require('./routes/reserva_salas')
 const reserva_equip = require('./routes/reserva_equip')
 
 const corsOptions = {
-    origin: 'https://front-end-c-l-e-e.vercel.app',
+    // origin: 'https://front-end-c-l-e-e.vercel.app',
+    origin: 'http://localhost:4200',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
 };
