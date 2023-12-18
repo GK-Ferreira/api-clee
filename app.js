@@ -23,12 +23,17 @@ mongoose.Promise = global.Promise
 
 //models
 const User = require('./models/User')
+const salaModel = require('./models/Reserva_Salas')
+const equipModel = require('./models/Reserva_Equip')
 
 app.use(express.json())
 
 //open route
-app.get('/',(req,res)=>{
-    res.status(200).json({msg:"Bem vindo a API"})
+app.get('/',async(req,res)=>{
+    const reservaSala = await salaModel.find()
+    const reservaEquip = await equipModel.find()
+    res.status(200).json({msg:"Bem vindo a API",reservaSala,reservaEquip})
+
 })
 
 app.get("/user/:id",checkToken,async(req,res)=>{
