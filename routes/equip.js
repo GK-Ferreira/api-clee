@@ -47,11 +47,11 @@ else{
 
    else{
 
-  Equips.findOne().sort({_id: -1}).lean().then((equipss)=>{    
+  Equips.findOne().sort({_id: -1}).lean().then(()=>{    
        const newEquips = {
         codigo: +codigo + +1,
         nome: nome.toUpperCase(),
-        qnt_estoque:qnt_estoque
+        qnt_estoque
      }
 
       new Equips(newEquips).save().then(() =>{
@@ -60,7 +60,7 @@ else{
          res.status(404).json({msg:'Error ao salvar.'+err})
       })
   }).catch((err)=>{
-      res.status(404).json({msg:'Error na consulta.'})
+      res.status(404).json({msg:'Erro na consulta.'})
   })
 
    }
@@ -84,7 +84,7 @@ router.put('/update/:id',checkToken ,async(req,res)=>{
       res.status(422).json({msg: "O nome é obrigatório"})
  }
 
- if(status == 0){
+ if(status == 0 || !status){
   res.status(422).json({msg: "Selecione um status antes de prosseguir!"})
  }
  if(!qnt_estoque){
@@ -101,10 +101,11 @@ router.put('/update/:id',checkToken ,async(req,res)=>{
    else{
        Equips.findOne({_id: req.params.id}).then(async(equipss)=>{
 
-          if (equipss.nome != nome.toUpperCase() || equipss.qnt_estoque != qnt_estoque ) {
-                          // Faça as atualizações apenas se houver diferença
+          if (equipss.nome != nome.toUpperCase() || equipss.status != status || equipss.qnt_estoque != qnt_estoque ) {
+                          // Faça as atualizações apenas se houver diferenças
+                     qnt_estoque == 0 ? sts = 'I' : sts = `${status}` 
                      const filter = { _id: req.params.id };
-                          const update = { $set: { nome: nome.toUpperCase(),
+                          const update = { $set: { nome: nome.toUpperCase(), status: sts ,
                          qnt_estoque: qnt_estoque , date_update: Date.now()}};
                           
                          await Equips.findByIdAndUpdate(filter, update, { new: true }).then(() =>{
@@ -150,7 +151,7 @@ router.put('/update/:id',checkToken ,async(req,res)=>{
   router.put('/delete/:id',checkToken ,async(req,res)=>{ 
     await Equips.findOne({_id:req.params.id}).then(async()=>{
          const filter = { _id: req.params.id };
-         const update = { $set: { D_E_L_E_T: '*'
+         const update = { $set: { D_E_L_E_T: '*',status:'D'
          , date_update: Date.now()}};
  
        await Equips.findByIdAndUpdate(filter, update, { new: true }).then(() =>{
