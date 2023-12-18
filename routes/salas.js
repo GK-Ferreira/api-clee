@@ -27,14 +27,10 @@ router.post('/create' ,checkToken ,async(req,res)=>{
     //Validação primeira, verificando se campos estão ou não vazios
     let codigo = 0
 
-    const {nome,status} = req.body
+    const {nome} = req.body
 
     if(!nome){
         res.status(422).json({msg: "O nome é obrigatório"})
-   }
-
-   if(status == 0 || !status){
-    res.status(422).json({msg: "Selecione um status antes de prosseguir!"})
    }
 
 else{
@@ -51,7 +47,6 @@ else{
          const newSalas = {
             codigo: +codigo + +1,
             nome: nome.toUpperCase(),
-            status: status
          }
 
         new Salas(newSalas).save().then(() =>{
@@ -80,10 +75,6 @@ router.put('/update/:id', checkToken,async(req,res)=>{
         res.status(422).json({msg: "O nome é obrigatório"})
    }
 
-   if(status == 0 || !status){
-    res.status(422).json({msg: "Selecione um status antes de prosseguir!"})
-   }
-
     else{
        await Salas.findOne({_id: {$ne: `${req.params.id}`}, nome: nome.toUpperCase(), D_E_L_E_T:''}).lean().then((name)=>{
          if(name){       
@@ -94,11 +85,11 @@ router.put('/update/:id', checkToken,async(req,res)=>{
      else{
          Salas.findOne({_id: req.params.id}).then(async(salass)=>{
 
-            if (salass.nome != nome.toUpperCase() || salass.status != status) {
+            if (salass.nome != nome.toUpperCase()) {
                             // Faça as atualizações apenas se houver diferenças
 
                        const filter = { _id: req.params.id };
-                            const update = { $set: { nome: nome.toUpperCase(), status: status
+                            const update = { $set: { nome: nome.toUpperCase()
                             , date_update: Date.now()}};
                             
                            await Salas.findByIdAndUpdate(filter, update, { new: true }).then(() =>{
@@ -142,7 +133,7 @@ router.put('/update/:id', checkToken,async(req,res)=>{
 router.put('/delete/:id',checkToken ,async(req,res)=>{
    await Salas.findOne({_id:req.params.id}).then(async()=>{
         const filter = { _id: req.params.id };
-        const update = { $set: { D_E_L_E_T: '*',status:'D'
+        const update = { $set: { D_E_L_E_T: '*'
         , date_update: Date.now()}};
 
       await Salas.findByIdAndUpdate(filter, update, { new: true }).then(() =>{
