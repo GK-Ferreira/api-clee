@@ -11,22 +11,16 @@ const Reserva_Salas = new Schema({
     type: String,
     required:true
    },
-   cod_sala:{
-    type:Schema.Types.ObjectId,
-    ref: 'salas',
-    required:true
-   }
-   ,
     desc:{
     type:String,
     required: true
    },
    date_reserv:{
-    type:Date,
+    type:String,
     required: true
    },
    date_entrega:{
-    type:Date,
+    type:String,
     required: true
    },
    date_create:{
