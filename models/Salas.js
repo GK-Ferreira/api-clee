@@ -11,6 +11,10 @@ const Salas = new Schema({
     type:String,
     required: true
    },
+   status:{
+    type:String,
+    required: true
+   },
    date_create:{
     type:Date,
     default:Date.now()
