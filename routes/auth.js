@@ -1,106 +1,96 @@
-const express = require('express')
-const router = express.Router()
-const jwt = require('jsonwebtoken')
-const bcrypt = require('bcrypt')
+const express = require("express");
+const router = express.Router();
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 
 //models
-const User = require('../models/User')
+const User = require("../models/User");
 
+router.post("/login", async (req, res) => {
+  const { name, password } = req.body;
 
-router.post("/login",async(req,res)=>{
+  if (!name) {
+    return res.status(422).json("O nome é obrigatório");
+  }
+  if (!password) {
+    return res.status(422).json("A senha é obrigatória");
+  }
 
-    const {name,password} = req.body
+  //check if user exists
+  const user = await User.findOne({ name: name });
 
+  if (!user) {
+    return res.status(422).json({ msg: "usuário não existe" });
+  }
 
-    if(!name){
-        return res.status(422).json("O nome é obrigatório")
-    }
-    if(!password){
-        return res.status(422).json("A senha é obrigatória")
-    }
+  //check password match
+  const checkPassword = await bcrypt.compare(password, user.password);
 
-    //check if user exists
-    const user= await User.findOne({name: name})
+  if (!checkPassword) {
+    return res.status(404).json("Senha inválida");
+  }
 
-     if(!user){
-         return res.status(422).json({msg:"usuário não existe"})
-          
-     }
+  try {
+    const secret = process.env.SECRET;
+    const refreshToken = jwt.sign({ name, password }, secret);
 
-     //check password match
-     const checkPassword = await bcrypt.compare(password,user.password)
+    const token = jwt.sign(
+      {
+        refreshToken,
+      },
+      secret
+    );
 
-     if(!checkPassword){
+    res
+      .status(200)
+      .json({ msg: "autenticação realizada com sucesso", token, refreshToken });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ msg: "erro no server tente novamente mais tarde" });
+  }
+});
 
-        return res.status(404).json("Senha inválida")
+//register
+router.post("/register", async (req, res) => {
+  const { name, password, confirmPassword } = req.body;
 
-     }
-     
-     try{
-         const secret = process.env.SECRET
-         const refreshToken = jwt.sign({  name,password }, secret,{expiresIn: '1800s'})
+  //validações
+  if (!name) {
+    return res.status(422).json("O nome é obrigatório");
+  }
+  if (!password) {
+    return res.status(422).json("A senha é obrigatória");
+  }
 
-         const token = jwt.sign({
-           refreshToken
+  if (password !== confirmPassword) {
+    return res.status(422).json("Senhas não conferem");
+  }
 
-          },secret,{
-            expiresIn: '1800s'
-          }
-          )
-          
-          res.status(200).json({msg: "autenticação realizada com sucesso", token, refreshToken})
-          
-          
-        }catch(err){
-          console.log(err)
-          res.status(500).json({msg: "erro no server tente novamente mais tarde"})
-        }
-        
-      })
+  //check if user exists
+  const userExists = await User.findOne({ name: name });
 
-      //register
-router.post('/register',async(req,res)=>{
+  if (userExists) {
+    return res.status(422).json({ msg: "usuário já existe" });
+  }
 
-    const {name,password,confirmPassword} = req.body
+  //create password
+  const salt = await bcrypt.genSalt(12);
+  const passwordHash = await bcrypt.hash(password, salt);
 
-    //validações
-    if(!name){
-        return res.status(422).json("O nome é obrigatório")
-    }
-    if(!password){
-        return res.status(422).json("A senha é obrigatória")
-    }
+  //create user
+  const user = new User({
+    name,
+    password: passwordHash,
+  });
 
-    if(password !== confirmPassword){
-        return res.status(422).json("Senhas não conferem")
-    }
+  try {
+    await user.save();
 
-    //check if user exists
-    const userExists = await User.findOne({name: name})
+    res.status(201).json({ msg: "Usuário criado com sucesso" });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ msg: "erro no server tente novamente mais tarde" });
+  }
+});
 
-    if(userExists){
-        return res.status(422).json({msg:"usuário já existe"})
-    }
-
-    //create password
-    const salt = await bcrypt.genSalt(12)
-    const passwordHash = await bcrypt.hash(password,salt)
-
-    //create user
-    const user = new User({
-        name,
-        password: passwordHash,
-    })
-
-    try{
-        await user.save()
-
-        res.status(201).json({msg: "Usuário criado com sucesso"})
-    }catch(err){
-        console.log(err)
-        res.status(500).json({msg: "erro no server tente novamente mais tarde"})
-    }
-
-})
-
-      module.exports = router
+module.exports = router;
