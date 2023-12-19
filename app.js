@@ -16,14 +16,14 @@ const salas = require('./routes/salas')
 const reserva_salas = require('./routes/reserva_salas')
 const reserva_equip = require('./routes/reserva_equip')
 
-// const corsOptions = {
-//     // origin: 'https://front-end-c-l-e-e.vercel.app',
-//     origin: 'http://localhost:4200',
-//     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-//     credentials: true,
-// };
+const corsOptions = {
+    // origin: 'https://front-end-c-l-e-e.vercel.app',
+    origin: 'http://localhost:4200',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+};
 
-app.use(cors());
+app.use(cors(corsOptions));
 
 mongoose.Promise = global.Promise
 
@@ -74,8 +74,8 @@ const dbPassword = process.env.DB_PASS
 const port = process.env.DB_PORT
 
 
-mongoose.connect(`mongodb+srv://${dbUser}:${dbPassword}@clee.8t8902l.mongodb.net/?retryWrites=true&w=majority`).then(()=>{
-    //mongoose.connect(`mongodb://localhost/CLEE_T`).then(()=>{    
+//mongoose.connect(`mongodb+srv://${dbUser}:${dbPassword}@clee.8t8902l.mongodb.net/?retryWrites=true&w=majority`).then(()=>{
+mongoose.connect(`mongodb://localhost/CLEE_T`).then(()=>{    
 app.listen(port)
     console.log('connect successful')
 
