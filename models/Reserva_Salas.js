@@ -28,11 +28,11 @@ const Reserva_Salas = new Schema({
     required: true
    },
    date_reserv:{
-    type:String,
+    type:Date,
     required: true
    },
    date_entrega:{
-    type:String,
+    type:Date,
     required: true
    },
    date_create:{
