@@ -41,11 +41,11 @@ const Reserva_Equip = new Schema({
     required: true
    },
    hora_reserva:{
-    type:String,
+    type:Time,
     required:true
    },
    hora_entrega:{
-    type:String,
+    type:Time,
     required:true
    },
      date_create:{

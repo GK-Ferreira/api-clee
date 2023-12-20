@@ -44,11 +44,11 @@ const Reserva_Salas = new Schema({
     default:Date.now()
    },
    hora_reserva:{
-    type:String,
+    type:Time,
     required:true
    },
    hora_entrega:{
-    type:String,
+    type:Time,
     required:true
    },
    D_E_L_E_T:{
